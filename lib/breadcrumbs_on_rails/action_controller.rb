@@ -14,7 +14,7 @@ module BreadcrumbsOnRails
     included do |base|
       extend          ClassMethods
       helper          HelperMethods
-      helper_method   :add_breadcrumb, :breadcrumbs
+      helper_method   :add_breadcrumb, :breadcrumbed
 
       unless base.respond_to?(:before_action)
         base.alias_method :before_action, :before_filter
@@ -24,11 +24,11 @@ module BreadcrumbsOnRails
     protected
 
     def add_breadcrumb(name, path = nil, options = {})
-      self.breadcrumbs << Breadcrumbs::Element.new(name, path, options)
+      self.breadcrumbed << Breadcrumbs::Element.new(name, path, options)
     end
 
-    def breadcrumbs
-      @breadcrumbs ||= []
+    def breadcrumbed
+      @breadcrumbed ||= []
     end
 
     module Utils
@@ -83,7 +83,7 @@ module BreadcrumbsOnRails
     module HelperMethods
 
       def render_breadcrumbs(options = {}, &block)
-        builder = (options.delete(:builder) || Breadcrumbs::SimpleBuilder).new(self, breadcrumbs, options)
+        builder = (options.delete(:builder) || Breadcrumbs::SimpleBuilder).new(self, breadcrumbed, options)
         content = builder.render.html_safe
         if block_given?
           capture(content, &block)
